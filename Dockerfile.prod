@@ -1,0 +1,9 @@
+### myapp/Dockerfile.prod ###
+FROM brettt89/silverstripe-web:7.3-apache AS ss_composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+WORKDIR /var/www/html
+COPY ./mysilverstripeapp .
+RUN composer i
+
+FROM brettt89/silverstripe-web:7.3-apache
+COPY --from=ss_composer /var/www/html /var/www/html

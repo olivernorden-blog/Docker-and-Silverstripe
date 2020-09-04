@@ -1,0 +1,32 @@
+### myapp/docker-compose-prod.yml ###
+version: '3'
+services: 
+  silverstripe:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    volumes: 
+      - assets:/var/www/html/public/assets
+    ports: 
+      - 8888:80
+    env_file: .ss-env.prod
+    depends_on: 
+      - mydb
+    restart: always
+    environment: 
+      DOCUMENT_ROOT: /var/www/html/public
+      SS_DATABASE_CLASS: MySQLDatabase
+      SS_DATABASE_SERVER: mydb
+      SS_DATABASE_NAME: SS_docker-demo
+
+      SS_ENVIRONMENT_TYPE: live
+  mydb:
+    image: mysql:5.7
+    volumes: 
+      - data:/var/lib/mysql
+    restart: always
+    env_file: .db-env.prod
+
+volumes:
+  data:
+  assets:
